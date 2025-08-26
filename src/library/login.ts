@@ -35,8 +35,7 @@ interface BackendToken {
 
 // Single attempt: ask your backend for one token (queue pop).
 async function getRecaptchaTokenFromBackend(): Promise<string | null> {
-  try {
-    console.log(BACKEND_RECAPTCHA_URL);
+  try { 
     const { data } = await axios.get<BackendToken>(BACKEND_RECAPTCHA_URL, {
       timeout: 10_000,
       // If your backend requires headers/auth, add them here
@@ -139,7 +138,6 @@ async function getRecaptchaTokenForeverHybrid(): Promise<string> {
   while (true) {
     attempt++;
     const fromBackend = await getRecaptchaTokenFromBackend();
-    console.log(fromBackend);
     if (fromBackend) return fromBackend;
 
     // every Nth miss, try CapSolver as a fallback
@@ -174,7 +172,6 @@ async function fetchEmailMfaCode(
   timeoutMs = 120_000
 ): Promise<string> {
   const code = await fetchClubGGVerificationCode(since, timeoutMs);
-  console.log(code, "gamil code");
   if (code) return code;
   throw new Error("No verification code received in time");
 }
@@ -189,7 +186,7 @@ export async function loginAndGetSid(): Promise<string> {
   // eslint-disable-next-line no-constant-condition
   while (true) {
     stepAttempt++;
-    const recaptcha = await getRecaptchaTokenForeverFromCapsolver();
+    const recaptcha = await getRecaptchaTokenForeverFromBackend();
     const p1 = new URLSearchParams({
       id: LOGIN_ID,
       pwd: LOGIN_PWD,
@@ -204,7 +201,6 @@ export async function loginAndGetSid(): Promise<string> {
       headers: baseHeaders,
       validateStatus: () => true,
     });
-    console.log(r1.data);
     step1Data = r1.data;
     r1Headers = r1.headers; // <-- keep headers for cookies
 
@@ -248,7 +244,7 @@ export async function loginAndGetSid(): Promise<string> {
 
       // Always fetch the latest/newer MFA code before retry
       const code = await fetchEmailMfaCode(mfaRequestedAt);
-      const recaptcha = await getRecaptchaTokenForeverFromCapsolver();
+      const recaptcha = await getRecaptchaTokenForeverFromBackend();
 
       const p2 = new URLSearchParams({
         id: LOGIN_ID,
@@ -299,7 +295,6 @@ export async function loginAndGetSid(): Promise<string> {
     }
 
     const cookies2 = parseSetCookie((r2Headers as any)?.["set-cookie"]);
-    console.log(cookies2["connect.sid"]);
     return cookies2["connect.sid"]; // no MFA case
   }
   throw new Error(`Unexpected login response: ${JSON.stringify(step1Data)}`);
