@@ -138,6 +138,7 @@ async function getRecaptchaTokenForeverHybrid(): Promise<string> {
   while (true) {
     attempt++;
     const fromBackend = await getRecaptchaTokenFromBackend();
+    console.log(fromBackend);
     if (fromBackend) return fromBackend;
 
     // every Nth miss, try CapSolver as a fallback
@@ -172,6 +173,7 @@ async function fetchEmailMfaCode(
   timeoutMs = 120_000
 ): Promise<string> {
   const code = await fetchClubGGVerificationCode(since, timeoutMs);
+  console.log(code, "gamil code");
   if (code) return code;
   throw new Error("No verification code received in time");
 }
@@ -201,6 +203,7 @@ export async function loginAndGetSid(): Promise<string> {
       headers: baseHeaders,
       validateStatus: () => true,
     });
+    console.log(r1.data);
     step1Data = r1.data;
     r1Headers = r1.headers; // <-- keep headers for cookies
 
@@ -295,6 +298,7 @@ export async function loginAndGetSid(): Promise<string> {
     }
 
     const cookies2 = parseSetCookie((r2Headers as any)?.["set-cookie"]);
+    console.log(cookies2["connect.sid"]);
     return cookies2["connect.sid"]; // no MFA case
   }
   throw new Error(`Unexpected login response: ${JSON.stringify(step1Data)}`);

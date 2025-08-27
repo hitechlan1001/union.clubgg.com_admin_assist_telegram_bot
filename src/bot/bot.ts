@@ -28,7 +28,7 @@ async function main() {
   await refreshSid();
 
   // repeat every hour
-  setInterval(refreshSid, 60 * 10 * 1000);
+  setInterval(refreshSid, 60 * 50 * 1000);
   // const sid = process.env.CONNECT_SID!;
 
   // middleware: inject sid into ctx.state
