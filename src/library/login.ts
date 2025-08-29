@@ -224,7 +224,7 @@ export async function loginAndGetSid(): Promise<string> {
     break; // proceed (MFA or success)
   }
 
-  // ✅ READ COOKIES FROM RESPONSE HEADERS (not step1Data)
+  //  ✅ READ COOKIES FROM RESPONSE HEADERS (not step1Data) 
   const cookies1 = parseSetCookie((r1Headers as any)?.["set-cookie"]);
   if (
     cookies1["connect.sid"] &&
