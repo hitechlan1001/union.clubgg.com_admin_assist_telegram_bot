@@ -188,7 +188,7 @@ export async function loginAndGetSid(): Promise<string> {
   // eslint-disable-next-line no-constant-condition
   while (true) {
     stepAttempt++;
-    const recaptcha = await getRecaptchaTokenForeverFromBackend();
+    const recaptcha = await getRecaptchaTokenForeverFromCapsolver();
     const p1 = new URLSearchParams({
       id: LOGIN_ID,
       pwd: LOGIN_PWD,
@@ -247,7 +247,7 @@ export async function loginAndGetSid(): Promise<string> {
 
       // Always fetch the latest/newer MFA code before retry
       const code = await fetchEmailMfaCode(mfaRequestedAt);
-      const recaptcha = await getRecaptchaTokenForeverFromBackend();
+      const recaptcha = await getRecaptchaTokenForeverFromCapsolver();
 
       const p2 = new URLSearchParams({
         id: LOGIN_ID,
