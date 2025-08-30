@@ -202,8 +202,7 @@ export async function loginAndGetSid(): Promise<string> {
     const r1 = await axios.post(LOGIN_URL, p1, {
       headers: baseHeaders,
       validateStatus: () => true,
-    });
-    console.log(r1.data);
+    });   
     step1Data = r1.data;
     r1Headers = r1.headers; // <-- keep headers for cookies
 
